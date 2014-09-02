@@ -12,10 +12,18 @@ Châssis Baron-4WD
   (couper, dénuder les extrémités) les fils fournis et les souder aux
   moteurs avant de les monter au châssis.
 
+Le montage des roues codeuses (ou encodeurs, i.e. roue dentée
+solidaire de la roation du moteur et détecteur optique pour mesurer la
+vitesse de rotation des roues du robot) est **à la fin** du guide de montage,
+utiliser **directement** cette partie (car le montage est différent,
+il faut en particulier utiliser des vis plus longues pour fixer les moteurs et
+le détecteur) pour le montage des deux roues avant
+ou arrière au choix.
+
 Carte microcontrôleur Romeo V2
 -
 
-[Wiki de la carte Rome V2](http://www.dfrobot.com/wiki/index.php/Romeo_V2-All_in_one_Controller_%28R3%29_%28SKU:DFR0225%29)
+[Wiki de la carte Romeo V2](http://www.dfrobot.com/wiki/index.php/Romeo_V2-All_in_one_Controller_%28R3%29_%28SKU:DFR0225%29)
 
 La carte se programme directement avec l'[interface pour Arduino](http://arduino.cc/en/Main/Software). Il
 faut choisir le type de carte **Arduino Leonardo** dans l'interface pour transférer les
