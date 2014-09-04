@@ -1,9 +1,10 @@
 /* 
   Du code pour piloter le robot par Bluetooth.
+
   Attention ! Contrairement a un Arduino, la carte Romeo V2
-  a 2 interfaces materielles poru la communication serie :
-  l'interface Serial (standard, utet l'interface Serial1
-  a laquelle est connectee 
+  a 2 interfaces materielles pour la communication serie :
+  l'interface Serial (standard) et l'interface Serial1
+  a laquelle est connectee la socket Bluetooth.
 */
 
 const int dirA = 7;
