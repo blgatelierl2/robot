@@ -1,6 +1,12 @@
 Documentation du robot
 =
 
+Les liens vers la documentation officielle (souvent pauvre) des
+éléments du robot sont recensés ici ainsi que diverses remarques
+utiles.
+
+On pourra aussi consulter le [forum du fabricant](http://www.dfrobot.com/forum/).
+
 Châssis Baron-4WD
 -
 
@@ -8,7 +14,7 @@ Châssis Baron-4WD
 
 [Guide de montage PDF](http://www.dfrobot.com/image/data/ROB0025/ROB0025-Instruction%20Mannual%20V2.0.pdf)
 
-**Attention**  Les 4 moteurs fournis ne sont pas pré-cablés, il faut préparer
+**Attention.**  Les 4 moteurs fournis ne sont pas pré-cablés, il faut préparer
   (couper, dénuder les extrémités) les fils fournis et les souder aux
   moteurs avant de les monter au châssis.
 
@@ -28,6 +34,8 @@ Carte microcontrôleur Romeo V2
 La carte se programme directement avec l'[interface pour Arduino](http://arduino.cc/en/Main/Software). Il
 faut choisir le type de carte **Arduino Leonardo** dans l'interface pour transférer les
 programmes vers la carte Romeo.
+
+[Une doc alternative en français](http://www.3sigma.fr/telechargements/CarteRomeo_Version2_0_v1_1.pdf)
 
 Capteurs infrarouge
 -
@@ -65,6 +73,10 @@ Module Bluetooth
 Il s'agit d'un module de communication série par Bluetooth standard et
 très facile à utiliser. Il se
 branche directement sur les ports Bluetooth de la carte Romeo.
+
+**Attention.**  La carte Romeo V2 possède 2 interfaces matérielles pour la
+  communication série : `Serial` (standard) et `Serial1`. La socket Bluetooth est
+  attachée à l'interface logicielle `Serial1` !
 
 Anneau de LED
 -
