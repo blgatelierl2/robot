@@ -76,7 +76,7 @@ branche directement sur les ports Bluetooth de la carte Romeo.
 
 **Attention.**  La carte Romeo V2 possède 2 interfaces matérielles pour la
   communication série : `Serial` (standard) et `Serial1`. La socket Bluetooth est
-  attachée à l'interface logicielle `Serial1` !
+  attachée à l'interface `Serial1` !
 
 Anneau de LED
 -
