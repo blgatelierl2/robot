@@ -1,23 +1,41 @@
 /* 
   Du code pour piloter le robot par Bluetooth.
-
   Attention ! Contrairement a un Arduino, la carte Romeo V2
   a 2 interfaces materielles pour la communication serie :
-  l'interface Serial (standard) et l'interface Serial1
-  a laquelle est connectee la socket Bluetooth.
+  l'interface Serial (standard, qui est en particulier utilisee
+  pour le transfert du programme) et l'interface Serial1
+  a laquelle est connectee la socket Bluetooth de la carte.
+  Le programme suivant utilise donc Serial1.
 */
 
 const int dirA = 7;
 const int pwmA = 6;
 const int dirB = 4;
 const int pwmB = 5;
-const int buzz = 8;
-const int IRd = 9;
-const int IRm = 10;
-const int IRg = 11;
+const int buzz = 2;
+//const int IRd = 9;
+//const int IRm = 10;
+//const int IRg = 11;
+
+#include "pitches.h"
+
+void melodie() {
+  int notes[] = {NOTE_E4,NOTE_DS4,NOTE_E4,NOTE_D4,NOTE_C4,NOTE_B4,NOTE_A3,NOTE_GS4,NOTE_A3};
+  float durees[] = {0.5,0.5,3.,0.5,0.5,0.5,0.5,1.,4.};
+  int tps = 300;
+  int d;
+  for (int i=0; i<9; ++i) {
+    d = (int)(tps*durees[i]);
+    tone(buzz,notes[i],d);
+    delay(d);
+  }
+  noTone(buzz);
+}
 
 void setup(void) {
   Serial1.begin(9600);
+  pinMode(buzz, OUTPUT);
+  melodie();
   pinMode(dirA, OUTPUT);
   digitalWrite(dirA, LOW);
   pinMode(pwmA, OUTPUT);
