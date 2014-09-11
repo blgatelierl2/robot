@@ -34,8 +34,8 @@ void melodie() {
 
 void setup(void) {
   Serial1.begin(9600);
-  pinMode(buzz, OUTPUT);
-  melodie();
+  //pinMode(buzz, OUTPUT);
+  //melodie();
   pinMode(dirA, OUTPUT);
   digitalWrite(dirA, LOW);
   pinMode(pwmA, OUTPUT);
