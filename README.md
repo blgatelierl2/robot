@@ -1,7 +1,4 @@
 Documentation du robot
 =
 
-Les liens vers la documentation officielle (souvent pauvre) des
-éléments du robot sont recensés sur le wiki de ce projet.
-
-On pourra aussi consulter le [forum du fabricant](http://www.dfrobot.com/forum/).
+La documentation a migré vers le **[wiki](https://github.com/blgatelierl2/robot/wiki)**.
