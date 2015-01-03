@@ -12,25 +12,29 @@
 
 */
 
-#define ENCG 0
-#define ENCD 1
+//#include "pitches.h"
+#include <Servo.h> 
+
+#define ENCL 1
+#define ENCR 0
 
 const int dirA = 7;
 const int pwmA = 6;
 const int dirB = 4;
 const int pwmB = 5;
-const int encA = ENGD+2;
-const int encB = ENCG+2;
+//const int encA = ENCD+2;
+//const int encB = ENCG+2;
 //const int buzz = 2;
 //const int IRd = 8;
-const int IRm = 9;
+//const int IRm = 9;
 //const int IRg = 12;
+const int sUlt = 11;
 
-int encompt[2] = {0,0};
+int copt[2] = {0,0};
 
-/*#include "pitches.h"
+Servo servUlt;
 
-void melodie() {
+/*void melodie() {
   int notes[] = {NOTE_E4,NOTE_DS4,NOTE_E4,NOTE_D4,NOTE_C4,NOTE_B4,NOTE_A3,NOTE_GS4,NOTE_A3};
   float durees[] = {0.5,0.5,3.,0.5,0.5,0.5,0.5,1.,4.};
   int tps = 300;
@@ -44,7 +48,7 @@ void melodie() {
 }*/
 
 void setup(void) {
-  Serial.begin(9600);
+  //Serial.begin(9600);
   Serial1.begin(9600);
   pinMode(dirA, OUTPUT);
   digitalWrite(dirA, LOW);
@@ -54,14 +58,19 @@ void setup(void) {
   digitalWrite(dirB, LOW);
   pinMode(pwmB, OUTPUT);
   analogWrite(pwmB, 0);
-  pinMode(encA, INPUT);
-  pinMode(encB, INPUT);
+  attachInterrupt(ENCL,coptL,CHANGE);
+  attachInterrupt(ENCR,coptR,CHANGE);
   /*pinMode(buzz, OUTPUT);
   melodie();*/
   //pinMode(IRd, INPUT);
-  pinMode(IRm, INPUT);
+  //pinMode(IRm, INPUT);
   //pinMode(IRd, INPUT);
-  
+  servUlt.attach(sUlt);
+  for (int i=0; i<180; ++i) {
+    servUlt.write(i);
+    delay(50);
+  }
+  servUlt.write(90);
 }
 
 void setMotor(int pwm, int dir, int p) {
@@ -118,16 +127,22 @@ void loop() {
   }
   
   // Obstacle
-  if (pA>0 && pB>0 && digitalRead(IRm)==LOW) setMotors(0,0);
+  //if (pA>0 && pB>0 && digitalRead(IRm)==LOW) setMotors(0,0);
   
-  delay(100);
+  /*
+  Serial.print(copt[ENCL]);
+  Serial.print(",");
+  Serial.println(copt[ENCR]);
+  */
+  
+  delay(10);
 }
 
-void codGz() {
-  ++;
+void coptL() {
+  ++copt[ENCL];
 }
  
  
-void RwheelSpeed() {
-  coder[RIGHT] ++;
+void coptR() {
+  ++copt[ENCR];
 }

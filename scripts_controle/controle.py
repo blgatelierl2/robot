@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 # Robot address
-robot_mac = '00:14:01:02:23:18'
+#robot_mac = '20:14:05:16:21:02'
+robot_mac = '20:14:05:16:21:45'
 
 
 import sys, math

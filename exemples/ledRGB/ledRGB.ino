@@ -1,9 +1,9 @@
 const int ledR = 10;
 const int ledG = 9;
 const int ledB = 11;
-int r = 255;
-int g = 255;
-int b = 255;
+int r = 127;
+int g = 127;
+int b = 127;
 
 void setup() {
   pinMode(ledR, OUTPUT);
