@@ -1,6 +1,7 @@
 
 #include "Moteurs.h"
 #include "Odometres.h"
+#include "Position.h"
 
 void setup() {
   Serial1.begin(9600);
@@ -44,12 +45,16 @@ void loop() {
       }
     }
     else if (c[0]=='P') {
-      Serial1.write(ODO_getL());
-      Serial1.write(ODO_getR());
+      int hx = int(10*POS_getX());
+      int hy = int(10*POS_getY());
+      int ha = int(180*POS_getA()/3.14);
+      Serial1.write((uint8_t*)&hx,2);
+      Serial1.write((uint8_t*)&hy,2);
+      Serial1.write((uint8_t*)&ha,2);
     }
   }
 
-  
+  POS_maj();
   
   delay(10);
 }
