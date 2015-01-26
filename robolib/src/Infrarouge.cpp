@@ -1,19 +1,24 @@
 
 #include <Arduino.h>
 
-#define LED_PINR 9
-#define LED_PING 10
-#define LED_PINB 11
+#define IRD_PINL 9
+#define IRD_PINC 10
+#define IRD_PINR 11
 
-void LED_setColor(int r, int g, int b) {
-  analogWrite(LED_PINR, r);
-  analogWrite(LED_PING, g);
-  analogWrite(LED_PINB, b);
+void IRD_init() {
+  pinMode(IRD_PINL, INPUT);
+  pinMode(IRD_PINC, INPUT);
+  pinMode(IRD_PINR, INPUT);
 }
 
-void LED_init() {
-  pinMode(LED_PINR, OUTPUT);
-  pinMode(LED_PING, OUTPUT);
-  pinMode(LED_PINB, OUTPUT);
-  LED_setColor(0,0,0);
+boolean IRD_detectL() {
+  return (digitalRead(IRD_PINL) == LOW);
+}
+
+boolean IRD_detectC() {
+  return (digitalRead(IRD_PINC) == LOW);
+}
+
+boolean IRD_detectR() {
+  return (digitalRead(IRD_PINR) == LOW);
 }

@@ -13,17 +13,32 @@ float POS_y = 0.;
 float POS_a = 0.;
 long POS_prevR = 0L;
 long POS_prevL = 0L;
+int POS_signeR = 1;
+int POS_signeL = 1;
 
-int signe(int x) {
-  return (x<0?-1:1);
+void POS_reset() {
+  POS_x = 0.;
+  POS_y = 0.;
+  POS_a = 0.;
+  POS_prevR = 0L;
+  POS_prevL = 0L;
+  POS_signeR = 1;
+  POS_signeL = 1;
 }
 
 void POS_maj() {
+  int p = MOT_getR();
+  if (p>0) POS_signeR = 1;
+  else if (p<0) POS_signeR = -1;
+  // sinon (puissance moteur à 0), on garde l'ancien signe
   long R = ODO_getR();
-  int dR = signe(MOT_getR())*(int)(R-POS_prevR);
+  int dR = POS_signeR*(int)(R-POS_prevR);
   POS_prevR = R;
+  p = MOT_getL();
+  if (p>0) POS_signeL = 1;
+  else if (p<0) POS_signeL = -1;
   long L = ODO_getL();
-  int dL = signe(MOT_getL())*(int)(L-POS_prevL);
+  int dL = POS_signeL*(int)(L-POS_prevL);
   POS_prevL = L;
   float dC = POS_TICK*(dR+dL)/2.;
   float dA = POS_TICK*(dR-dL)/POS_ENTRAXE;

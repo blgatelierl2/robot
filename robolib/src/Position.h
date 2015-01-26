@@ -1,6 +1,7 @@
 #ifndef POSITION_H
 #define POSITION_H
 
+void POS_reset();
 void POS_maj();
 float POS_getX();
 float POS_getY();

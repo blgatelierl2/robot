@@ -64,7 +64,7 @@ def draw_joy((cx,cy),r,(x,y),col):
 def draw_pos(RX,RY,RA):
     pygame.gfxdraw.aacircle(screen,int(RX+w/2),int(3*h/4+RY),1,red)
 
-def draw_screen(j1,j2,RX=0,RY=0,RA=0):
+def draw_screen(j1,j2,(RX,RY,RA)):
     screen.fill(black)
     text = font.render('Mode '+('D' if modeD else 'S'),16,bluegreen)
     screen.blit(text,(30,20))
@@ -74,13 +74,20 @@ def draw_screen(j1,j2,RX=0,RY=0,RA=0):
     pygame.display.flip()
 
 
+def my_recv(bt,size):
+    donnees = []
+    for i in range(size):
+        donnees.append(bt.recv(1))
+    return ''.join(donnees)
+
+
 # MAIN
 def main():
     global modeD
     RX,RY,RA = 0,0,0
     modeD = (len(sys.argv)==1)
     bt = init_bt()
-    draw_screen((0,0),(0,0))
+    draw_screen((0,0),(0,0),(0,0,0))
     req_timer = 0
     while True:
         joyEvent = True
@@ -96,7 +103,7 @@ def main():
                 joyEvent = False
                 ax1 = [joy.get_axis(i) for i in range(2)]
                 ax2 = [joy.get_axis(i) for i in range(3,5)]
-                draw_screen(tuple(ax1),tuple(ax2),RX,RY,RA)
+                draw_screen(tuple(ax1),tuple(ax2),(RX,RY,RA))
                 if modeD:
                     bt.send('D'+chr(int((1-ax1[1])*127))+chr(int((ax2[0]+1)*127)))
                 else:
@@ -104,12 +111,10 @@ def main():
                     bt.send('S'+chr(min(int(math.sqrt(x*x+y*y)*255),255))+chr(int((math.atan2(y,x)/math.pi+1)*127)))
         if req_timer==0:
             bt.send('P'+chr(0)+chr(0))
-            hx = bt.recv(1)+bt.recv(1)
-            RX = struct.unpack('h',hx)[0]/10.
-            hy = bt.recv(1)+bt.recv(1)
-            RY = struct.unpack('h',hy)[0]/10.
-            ha = bt.recv(1)+bt.recv(1)
-            RA = struct.unpack('h',ha)
+            donnees = my_recv(bt,6)
+            RX,RY,RA = struct.unpack('hhh',donnees)
+            RX /= 10.
+            RY /= 10.
             print >> sys.stderr, RX,RY,RA
         req_timer = (req_timer+1)%10
         clk.tick(20)

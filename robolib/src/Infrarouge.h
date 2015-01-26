@@ -1,7 +1,9 @@
 #ifndef INFRAROUGE_H
 #define INFRAROUGE_H
 
-void LED_setColor(int r, int g, int b);
-void LED_init();
+void IRD_init();
+boolean IRD_detectL();
+boolean IRD_detectC();
+boolean IRD_detectR();
 
 #endif
