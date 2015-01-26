@@ -1,6 +1,7 @@
 
 #include <Arduino.h>
 #include "Odometres.h"
+#include "Moteurs.h"
 
 #define POS_TICK 2.08
 // 1 tick en cm
@@ -13,12 +14,16 @@ float POS_a = 0.;
 long POS_prevR = 0L;
 long POS_prevL = 0L;
 
+int signe(int x) {
+  return (x<0?-1:1);
+}
+
 void POS_maj() {
   long R = ODO_getR();
-  int dR = (int)(R-POS_prevR);
+  int dR = signe(MOT_getR())*(int)(R-POS_prevR);
   POS_prevR = R;
   long L = ODO_getL();
-  int dL = (int)(L-POS_prevL);
+  int dL = signe(MOT_getL())*(int)(L-POS_prevL);
   POS_prevL = L;
   float dC = POS_TICK*(dR+dL)/2.;
   float dA = POS_TICK*(dR-dL)/POS_ENTRAXE;

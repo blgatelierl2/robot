@@ -26,25 +26,25 @@ void MOT_setMot(int dir, int pwm, int p) {
   analogWrite(pwm, abs(p));
 }
 
-void MOT_setMot1(int p) {
+void MOT_setL(int p) {
   MOT_p1 = p;
   MOT_setMot(MOT_DIR1,MOT_PWM1,p);
 }
 
-void MOT_setMot2(int p) {
+void MOT_setR(int p) {
   MOT_p2 = p;
   MOT_setMot(MOT_DIR2,MOT_PWM2,p);
 }
 
-int MOT_getMot1() {
+int MOT_getL() {
   return MOT_p1;
 }
 
-int MOT_getMot2() {
+int MOT_getR() {
   return MOT_p2;
 }
 
 void MOT_setMotors(int p1, int p2) {
-  MOT_setMot1(p1);
-  MOT_setMot2(p2);
+  MOT_setL(p1);
+  MOT_setR(p2);
 }
