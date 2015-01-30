@@ -115,6 +115,7 @@ def main():
             RX,RY,RA = struct.unpack('hhh',donnees)
             RX /= 10.
             RY /= 10.
+            RA = RA%360
             print >> sys.stderr, RX,RY,RA
         req_timer = (req_timer+1)%10
         clk.tick(20)

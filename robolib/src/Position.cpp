@@ -40,9 +40,10 @@ void POS_maj() {
   long L = ODO_getL();
   int dL = POS_signeL*(int)(L-POS_prevL);
   POS_prevL = L;
-  float dC = POS_TICK*(dR+dL)/2.;
-  float dA = POS_TICK*(dR-dL)/POS_ENTRAXE;
-  POS_a += dA;
+  float dC = POS_TICK*(float)(dR+dL)/2.;
+  //float dA = POS_TICK*(float)(dR-dL)/POS_ENTRAXE;
+  //POS_a += dA;
+  POS_a = POS_TICK*(float)(POS_prevR-POS_prevL)/POS_ENTRAXE;
   POS_x += cos(POS_a)*dC;
   POS_y += sin(POS_a)*dC;
 }

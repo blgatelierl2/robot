@@ -56,5 +56,5 @@ void loop() {
 
   POS_maj();
   
-  delay(1);
+  delay(5);
 }
