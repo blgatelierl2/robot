@@ -2,7 +2,12 @@
 #include <Arduino.h>
 #include <Servo.h>
 
-#define SRV_PIN 8
+/* On boards other than the Mega, use of the library disables
+   analogWrite() (PWM) functionality on pins 9 and 10, whether
+   or not there is a Servo on those pins.
+*/
+
+#define SRV_PIN 9
 
 Servo SRV_servo;
 
