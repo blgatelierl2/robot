@@ -3,8 +3,10 @@
 
 #define ULT_PWM 11
 // PWM Output 0－50000US，Every 50US represent 1cm
+// Pin 4 du module
 #define ULT_TRIG 12
 // PWM trigger pin
+// Pin 6 du module
 
 uint8_t EnPwmCmd[4] = {0x44,0x02,0xbb,0x01}; // distance measure command
  

@@ -44,7 +44,7 @@ int MOT_getR() {
   return MOT_p2;
 }
 
-void MOT_setMotors(int p1, int p2) {
-  MOT_setL(p1);
-  MOT_setR(p2);
+void MOT_setMotors(int pL, int pR) {
+  MOT_setL(pL);
+  MOT_setR(pR);
 }

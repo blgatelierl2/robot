@@ -6,6 +6,6 @@ void MOT_setL(int p);
 void MOT_setR(int p);
 int MOT_getL();
 int MOT_getR();
-void MOT_setMotors(int p1, int p2);
+void MOT_setMotors(int pL, int pR);
 
 #endif
