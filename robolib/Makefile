@@ -2,5 +2,5 @@
 all:
 	ino build
 	ino upload
-	sleep 1
-	ino serial
+#	sleep 1
+#	ino serial

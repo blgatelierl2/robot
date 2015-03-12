@@ -3,7 +3,7 @@
 #include "Led13.h"
 #include "Moteurs.h"
 #include "Odometres.h"
-#include "Servomoteur.h"
+//#include "Servomoteur.h"
 #include "Ultrason.h"
 
 int CMD_fabInt(byte b0, byte b1) {
@@ -28,7 +28,7 @@ void CMD_recvOrdre() {
       Serial.write((uint8_t*)&V,4);
     }
     else if (c[0]=='s') {
-      SRV_setAngle(int(c[1]));
+      ULT_setAngle(int(c[1]));
     }
     else if (c[0]=='u') {
       int V = ULT_getDistance();
