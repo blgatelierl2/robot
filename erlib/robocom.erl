@@ -48,7 +48,7 @@ serveur(SerialPort) ->
 	    SerialPort ! {send, <<"i",0:32>>},
 	    receive
 		{data, Bytes} ->
-		    <<IL:1,IC:1,IR:1,_>> = Bytes,
+		    <<_:5,IR:1,IC:1,IL:1>> = Bytes,
 		    Pid ! {ird_res,IL,IC,IR},
 		    serveur(SerialPort)
 	    end

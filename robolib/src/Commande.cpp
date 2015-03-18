@@ -36,10 +36,10 @@ void CMD_recvOrdre() {
       Serial.write((uint8_t*)&V,2);
     }
     else if (c[0]=='i') {
-      boolean l = IRD_detectL();
-      boolean c = IRD_detectC();
-      boolean r = IRD_detectR();
-      Serial.write(byte(l)&(byte(c)<<1)&(byte(r)<<2));
+      byte l = IRD_detectL()?1:0;
+      byte c = IRD_detectC()?1:0;
+      byte r = IRD_detectR()?1:0;
+      Serial.write(l|(c<<1)|(r<<2));
     }
     else if (c[0]=='D') {
       p = 2*(c[1]-127);

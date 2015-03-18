@@ -11,14 +11,14 @@ void IRD_init() {
   pinMode(IRD_PINR, INPUT);
 }
 
-boolean IRD_detectL() {
+bool IRD_detectL() {
   return (digitalRead(IRD_PINL) == LOW);
 }
 
-boolean IRD_detectC() {
+bool IRD_detectC() {
   return (digitalRead(IRD_PINC) == LOW);
 }
 
-boolean IRD_detectR() {
+bool IRD_detectR() {
   return (digitalRead(IRD_PINR) == LOW);
 }

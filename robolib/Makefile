@@ -4,3 +4,6 @@ all:
 	ino upload
 #	sleep 1
 #	ino serial
+
+clean:
+	ino build
