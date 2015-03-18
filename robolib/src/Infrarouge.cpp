@@ -1,9 +1,9 @@
 
 #include <Arduino.h>
 
-#define IRD_PINL 9
-#define IRD_PINC 10
-#define IRD_PINR 11
+#define IRD_PINL 10
+#define IRD_PINC 11
+#define IRD_PINR 12
 
 void IRD_init() {
   pinMode(IRD_PINL, INPUT);

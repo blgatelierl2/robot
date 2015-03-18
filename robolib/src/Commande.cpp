@@ -5,6 +5,7 @@
 #include "Odometres.h"
 #include "Servomoteur.h"
 #include "Ultrason.h"
+#include "Infrarouge.h"
 
 int CMD_fabInt(byte b0, byte b1) {
   return int(b0)|(int(b1)<<8);
@@ -19,7 +20,7 @@ void CMD_recvOrdre() {
       MOT_setMotors(CMD_fabInt(c[1],c[2]),CMD_fabInt(c[3],c[4]));
     }
     else if (c[0]=='l') {
-      LED13_set(bool(c[1]));
+      LED13_set(boolean(c[1]));
     }
     else if (c[0]=='o') {
       long V = ODO_getL();
@@ -33,6 +34,12 @@ void CMD_recvOrdre() {
     else if (c[0]=='u') {
       int V = ULT_getDistance();
       Serial.write((uint8_t*)&V,2);
+    }
+    else if (c[0]=='i') {
+      boolean l = IRD_detectL();
+      boolean c = IRD_detectC();
+      boolean r = IRD_detectR();
+      Serial.write(byte(l)&(byte(c)<<1)&(byte(r)<<2));
     }
     else if (c[0]=='D') {
       p = 2*(c[1]-127);

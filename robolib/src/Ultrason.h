@@ -3,6 +3,6 @@
 
 void ULT_init();
 int ULT_getDistance();
-void ULT_setAngle(int a);
+//void ULT_setAngle(int a);
 
 #endif

@@ -27,11 +27,13 @@ void MOT_setMot(int dir, int pwm, int p) {
 }
 
 void MOT_setL(int p) {
+  p = constrain(p,0,255);
   MOT_p1 = p;
   MOT_setMot(MOT_DIR1,MOT_PWM1,p);
 }
 
 void MOT_setR(int p) {
+  p = constrain(p,0,255);
   MOT_p2 = p;
   MOT_setMot(MOT_DIR2,MOT_PWM2,p);
 }
