@@ -1,12 +1,25 @@
 -module(robocom).
--export([init/0,start/0,moteurs/3,led/2,servo/2,ultrason/1,odometres/1,infrarouge/1]).
+-export([start/0,start_serveur/0,moteurs/3,led/2,servo/2,ultrason/1,odometres/1,infrarouge/1,get_robot0/0]).
 
 -define(DEVICE,"/dev/ttyACM0").
 
-init() -> spawn(?MODULE,start,[]).
+start() ->
+    register(accueil,self()),
+    Serv = spawn_serveur(),
+    io:format("Serveur en place!~n"),
+    accueil(Serv).
 
-start() -> start(9600).
-start(Speed) ->
+accueil(Serv) ->
+    receive
+	{get_serveur,Client} ->
+	    Client ! {serveur,Serv},
+	    accueil(Serv)
+    end.
+
+spawn_serveur() -> spawn(?MODULE,start_serveur,[]).
+
+start_serveur() -> start_serveur(9600).
+start_serveur(Speed) ->
     %try
     SerialPort = serial:start([{speed,Speed},{open,?DEVICE}]),
     %link(SerialPort),
@@ -82,4 +95,10 @@ infrarouge(Serv) ->
     Serv ! {ird,self()},
     receive
 	{ird_res,IL,IC,IR} -> {IL,IC,IR}
+    end.
+
+get_robot0() ->
+    {accueil,'robot0@robot0'} ! {get_serveur,self()},
+    receive
+	{serveur,Serveur} -> Serveur
     end.

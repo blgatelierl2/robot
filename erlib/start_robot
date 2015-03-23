@@ -1,0 +1,8 @@
+#!/bin/bash
+
+ERLIBDIR=~/robot/erlib
+
+echo "Compilation..."
+erlc $ERLIBDIR/robocom.erl
+echo "Lancement..."
+erl -run robocom -noshell -sname robot0 -setcookie ROBOT
