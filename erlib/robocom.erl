@@ -1,34 +1,37 @@
 -module(robocom).
--export([start/0,start_serveur/0,moteurs/3,led/2,servo/2,ultrason/1,odometres/1,infrarouge/1,get_robot0/0]).
+-export([start/0,start_serveur/0,ping_robot/1,get_robot/1,enregistrement/1,get_controleur/1,moteurs/3,led/2,servo/2,ultrason/1,odometres/1,infrarouge/1]).
 
 -define(DEVICE,"/dev/ttyACM0").
 
+
+%%% FONCTIONS DU SERVEUR ROBOT
+%%% INUTILES AUX ETUDIANTS
 start() ->
     register(accueil,self()),
     Serv = spawn_serveur(),
     io:format("Serveur en place!~n"),
     accueil(Serv).
 
-accueil(Serv) ->
+accueil(Serv) -> accueil(Serv,none).
+accueil(Serv,Cont) ->
     receive
 	{get_serveur,Client} ->
-	    Client ! {serveur,Serv},
-	    accueil(Serv)
+	    Client ! {serveur,node(),Serv},
+	    accueil(Serv,Cont);
+	{register_control,Client} ->
+	    Client ! {registered,node()},
+	    accueil(Serv,Client);
+	{ask_control,Client} ->
+	    Client ! {controleur,node(),Cont},
+	    accueil(Serv,Cont)
     end.
 
 spawn_serveur() -> spawn(?MODULE,start_serveur,[]).
 
 start_serveur() -> start_serveur(9600).
 start_serveur(Speed) ->
-    %try
     SerialPort = serial:start([{speed,Speed},{open,?DEVICE}]),
-    %link(SerialPort),
     serveur(SerialPort).
-						%{catch
-						%exit:normal ->
-						%io:format("Serial connexion lost... Restarting!~n")
-						%start(Speed)
-						%end.
 
 serveur(SerialPort) ->
     receive
@@ -46,7 +49,7 @@ serveur(SerialPort) ->
 	    receive
 		{data, Bytes} ->
 		    <<D:16/integer-signed-little>> = Bytes,
-		    Pid ! {ult_res,D},
+		    Pid ! {ult_res,self(),D},
 		    serveur(SerialPort)
 	    end;
 	{odo,Pid} ->
@@ -54,7 +57,7 @@ serveur(SerialPort) ->
 	    receive
 		{data, Bytes} ->
 		    <<OL:32/integer-signed-little,OR:32/integer-signed-little>> = Bytes,
-		    Pid ! {odo_res,OL,OR},
+		    Pid ! {odo_res,self(),OL,OR},
 		    serveur(SerialPort)
 	    end;
 	{ird,Pid} ->
@@ -62,43 +65,85 @@ serveur(SerialPort) ->
 	    receive
 		{data, Bytes} ->
 		    <<_:5,IR:1,IC:1,IL:1>> = Bytes,
-		    Pid ! {ird_res,IL,IC,IR},
+		    Pid ! {ird_res,self(),IL,IC,IR},
 		    serveur(SerialPort)
 	    end
     end.
 
+
+%%% FONCTIONS D'INTERFACE
+%%% UTILES AUX ETUDIANTS !
+
+robot_node(N) -> list_to_atom(lists:concat(["robot",N,"@robot",N])).
+
+
+%% VERIFICATIONS
+
+% Ping un robot : repond "pong" si up, "pang" si down
+ping_robot(N) -> net_adm:ping(robot_node(N)).
+
+
+%% DIALOGUE AVEC L'ACCUEIL DU ROBOT
+% Obtenir le PID du serveur d'un robot
+get_robot(N) ->
+    Node = robot_node(N),
+    {accueil,Node} ! {get_serveur,self()},
+    receive
+	{serveur,Node,Serveur} -> Serveur
+    end.
+
+% S'enregistrer comme controleur aupres d'un robot
+enregistrement(N) ->
+    Node = robot_node(N),
+    {accueil,Node} ! {register_control,self()},
+    receive
+	{registered,Node} -> ok
+    end.
+
+% Recuperer le PID du controleur d'un robot (pour pouvoir communiquer avec lui)
+get_controleur(N) ->
+    Node = robot_node(N),
+    {accueil,Node} ! {ask_control,self()},
+    receive
+	{controleur,Node,Cont} -> Cont
+    end.
+
+
+%% CONTROLE DU ROBOT
+%% L'argument Serv est le PID du serveur du robot
+
+% Controler les moteurs (Pl/Pr entre -255 et 255)
 moteurs(Serv,Pl,Pr) ->
     Serv ! {mot,Pl,Pr},
     ok.
 
+% Allumer/eteindre la LED du robot (B = 0 ou 1)
 led(Serv,B) ->
     Serv ! {led,B},
     ok.
 
+% Controle du servomoteur (A l'angle entre 0 et 180)
 servo(Serv,A) -> 
     Serv ! {srv,A},
     ok.
 
+% Distance mesuree par le capteur ultrason (en cm)
 ultrason(Serv) ->
     Serv ! {ult,self()},
     receive
-	{ult_res,D} -> D
+	{ult_res,Serv,D} -> D
     end.
 
+% Valeurs des roues codeuses (1 unite = 1/10 de tour de roue)
 odometres(Serv) ->
     Serv ! {odo,self()},
     receive
-	{odo_res,OL,OR} -> {OL,OR}
+	{odo_res,Serv,OL,OR} -> {OL,OR}
     end.
 
+% Etat des capteurs infrarouge (1 = obstacle, 0 sinon)
 infrarouge(Serv) ->
     Serv ! {ird,self()},
     receive
-	{ird_res,IL,IC,IR} -> {IL,IC,IR}
-    end.
-
-get_robot0() ->
-    {accueil,'robot0@robot0'} ! {get_serveur,self()},
-    receive
-	{serveur,Serveur} -> Serveur
+	{ird_res,Serv,IL,IC,IR} -> {IL,IC,IR}
     end.
