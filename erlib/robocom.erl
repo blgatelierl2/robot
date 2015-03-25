@@ -1,5 +1,5 @@
 -module(robocom).
--export([start/0,spawn_serveur/0,start_serveur/0,ping_robot/1,get_robot/1,enregistrement/1,get_controleur/1,moteurs/3,led/2,servo/2,ultrason/1,odometres/1,infrarouge/1]).
+-export([start/0,spawn_serveur/0,start_serveur/0,robot_node/1,ping_robot/1,get_robot/1,reset_robot/1,enregistrement/1,get_controleur/1,moteurs/3,led/2,servo/2,ultrason/1,odometres/1,infrarouge/1]).
 
 -define(DEVICE,"/dev/ttyACM0").
 -define(SERIALSPEED,9600).
@@ -26,6 +26,11 @@ accueil(Serv,Cont) ->
 	    accueil(Serv,Client);
 	{ask_control,Client} ->
 	    Client ! {controleur,node(),Cont},
+	    accueil(Serv,Cont);
+	{reset,_} -> reset(Serv);
+	{disconnected,Serv} when Cont==none -> accueil(Serv,Cont);
+	{disconnected,Serv} ->
+	    Cont ! {notif_deconnexion,node()},
 	    accueil(Serv,Cont)
     end.
 
@@ -76,6 +81,7 @@ serveur(SerialPort) ->
 	    end;
 	{'EXIT',SerialPort,_} ->
 	    io:format("ERREUR : Deconnexion serial !~n--> Tentative de reconnexion (dans ~wms).~n",[?RECODELAY]),
+	    accueil ! {disconnected,self()},
 	    timer:sleep(?RECODELAY),
 	    start_serveur()
     end.
@@ -84,7 +90,7 @@ serveur(SerialPort) ->
 %%% FONCTIONS D'INTERFACE
 %%% UTILES AUX ETUDIANTS !
 
-robot_node(N) -> list_to_atom(lists:concat(["robot",N,"@robot",N])).
+robot_node(N) -> list_to_atom(lists:concat(["robonode@robot",N])).
 
 
 %% VERIFICATIONS
@@ -120,6 +126,10 @@ get_controleur(N) ->
 	{controleur,Node,Cont} -> Cont
     after ?TIMEOUT -> timeout
     end.
+
+reset_robot(N) ->
+    {accueil,robot_node(N)} ! {reset,self()},
+    ok.
 
 
 %% CONTROLE DU ROBOT
@@ -163,3 +173,9 @@ infrarouge(Serv) ->
 	{ird_res,Serv,IL,IC,IR} -> {IL,IC,IR}
     after ?TIMEOUT -> timeout
     end.
+
+reset(Serv) ->
+    moteurs(Serv,0,0),
+    servo(Serv,90),
+    led(Serv,0),
+    ok.
