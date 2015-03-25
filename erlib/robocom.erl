@@ -1,7 +1,10 @@
 -module(robocom).
--export([start/0,start_serveur/0,ping_robot/1,get_robot/1,enregistrement/1,get_controleur/1,moteurs/3,led/2,servo/2,ultrason/1,odometres/1,infrarouge/1]).
+-export([start/0,spawn_serveur/0,start_serveur/0,ping_robot/1,get_robot/1,enregistrement/1,get_controleur/1,moteurs/3,led/2,servo/2,ultrason/1,odometres/1,infrarouge/1]).
 
 -define(DEVICE,"/dev/ttyACM0").
+-define(SERIALSPEED,9600).
+-define(TIMEOUT,5000).
+-define(RECODELAY,1000).
 
 
 %%% FONCTIONS DU SERVEUR ROBOT
@@ -9,7 +12,7 @@
 start() ->
     register(accueil,self()),
     Serv = spawn_serveur(),
-    io:format("Serveur en place!~n"),
+    io:format("Serveur en place.~n"),
     accueil(Serv).
 
 accueil(Serv) -> accueil(Serv,none).
@@ -28,9 +31,9 @@ accueil(Serv,Cont) ->
 
 spawn_serveur() -> spawn(?MODULE,start_serveur,[]).
 
-start_serveur() -> start_serveur(9600).
-start_serveur(Speed) ->
-    SerialPort = serial:start([{speed,Speed},{open,?DEVICE}]),
+start_serveur() ->
+    process_flag(trap_exit,true),
+    SerialPort = serial:start([{speed,?SERIALSPEED},{open,?DEVICE}]),
     serveur(SerialPort).
 
 serveur(SerialPort) ->
@@ -51,6 +54,7 @@ serveur(SerialPort) ->
 		    <<D:16/integer-signed-little>> = Bytes,
 		    Pid ! {ult_res,self(),D},
 		    serveur(SerialPort)
+	    after ?TIMEOUT -> serveur(SerialPort)
 	    end;
 	{odo,Pid} ->
 	    SerialPort ! {send, <<"o",0:32>>},
@@ -59,6 +63,7 @@ serveur(SerialPort) ->
 		    <<OL:32/integer-signed-little,OR:32/integer-signed-little>> = Bytes,
 		    Pid ! {odo_res,self(),OL,OR},
 		    serveur(SerialPort)
+	    after ?TIMEOUT -> serveur(SerialPort)
 	    end;
 	{ird,Pid} ->
 	    SerialPort ! {send, <<"i",0:32>>},
@@ -67,7 +72,12 @@ serveur(SerialPort) ->
 		    <<_:5,IR:1,IC:1,IL:1>> = Bytes,
 		    Pid ! {ird_res,self(),IL,IC,IR},
 		    serveur(SerialPort)
-	    end
+	    after ?TIMEOUT -> serveur(SerialPort)
+	    end;
+	{'EXIT',SerialPort,_} ->
+	    io:format("ERREUR : Deconnexion serial !~n--> Tentative de reconnexion (dans ~wms).~n",[?RECODELAY]),
+	    timer:sleep(?RECODELAY),
+	    start_serveur()
     end.
 
 
@@ -90,6 +100,7 @@ get_robot(N) ->
     {accueil,Node} ! {get_serveur,self()},
     receive
 	{serveur,Node,Serveur} -> Serveur
+    after ?TIMEOUT -> timeout
     end.
 
 % S'enregistrer comme controleur aupres d'un robot
@@ -98,6 +109,7 @@ enregistrement(N) ->
     {accueil,Node} ! {register_control,self()},
     receive
 	{registered,Node} -> ok
+    after ?TIMEOUT -> timeout
     end.
 
 % Recuperer le PID du controleur d'un robot (pour pouvoir communiquer avec lui)
@@ -106,6 +118,7 @@ get_controleur(N) ->
     {accueil,Node} ! {ask_control,self()},
     receive
 	{controleur,Node,Cont} -> Cont
+    after ?TIMEOUT -> timeout
     end.
 
 
@@ -132,6 +145,7 @@ ultrason(Serv) ->
     Serv ! {ult,self()},
     receive
 	{ult_res,Serv,D} -> D
+    after ?TIMEOUT -> timeout
     end.
 
 % Valeurs des roues codeuses (1 unite = 1/10 de tour de roue)
@@ -139,6 +153,7 @@ odometres(Serv) ->
     Serv ! {odo,self()},
     receive
 	{odo_res,Serv,OL,OR} -> {OL,OR}
+    after ?TIMEOUT -> timeout
     end.
 
 % Etat des capteurs infrarouge (1 = obstacle, 0 sinon)
@@ -146,4 +161,5 @@ infrarouge(Serv) ->
     Serv ! {ird,self()},
     receive
 	{ird_res,Serv,IL,IC,IR} -> {IL,IC,IR}
+    after ?TIMEOUT -> timeout
     end.
