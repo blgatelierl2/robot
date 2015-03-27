@@ -7,7 +7,7 @@ La documentation **technique** a migré vers le **[wiki](https://github.com/blga
 
 Un routeur wifi est configuré pour gérer un réseau local de SSID `robot` et d'adresse `192.168.42.0/24` avec DHCP. Les robots sont identifiés par adresse MAC et récupèrent des IP fixes `192.168.42.10x` (`x` entre 0 et 9). Leurs hostnames sont `robotX` (`X` entre 0 et 9).
 
-Pour le bon fonctionnement avec Erlang, il est indispensable d'ajouter avant tout chose les hôtes suivants à `/etc/hosts` :
+Pour le bon fonctionnement avec Erlang, il est indispensable d'ajouter, avant toute chose, les hôtes suivants à `/etc/hosts` :
 ```
 192.168.42.100  robot0
 192.168.42.101  robot1
@@ -37,13 +37,13 @@ Le mot de passe est `ubuntu`.
 
 Lancer le script `erlig/start_robot` sur le robot. Un serveur se lance. Sauf problème technique nécessitant de relancer le serveur, toutes les manipulations se font à partir de maintenant directement sur votre machine.
 
-Sur votre machine, lancer Erlang avec `erlib/start_control` ou en utilisant la syntaxe suivante :
+Sur votre machine, lancer Erlang en utilisant la syntaxe suivante :
 ```
-erl -sname control -setcookie ROBOT`
+erl -sname control -setcookie ROBOT
 ```
 Le nom `control` n'a aucune importance, le changer n'aura pas d'incidence. En revanche, le cookie doit être `ROBOT` !
 
-Vérifier la communication avec le serveur :
+Compiler `robocom` et Vérifier la communication avec le serveur :
 ```
 > robocom:ping_robot(0).
 pong

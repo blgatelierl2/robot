@@ -1,8 +1,8 @@
 -module(demo).
--export([start/0]).
+-export([start/1]).
 
-start() ->
-    R = robocom:get_robot(0),
+start(N) ->
+    R = robocom:get_robot(N),
     tourne(R,robocom:infrarouge(R)).
 
 init_avance(R) ->

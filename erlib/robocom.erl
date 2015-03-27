@@ -27,7 +27,9 @@ accueil(Serv,Cont) ->
 	{ask_control,Client} ->
 	    Client ! {controleur,node(),Cont},
 	    accueil(Serv,Cont);
-	{reset,_} -> reset(Serv);
+	{reset,_} ->
+	    reset(Serv),
+	    accueil(Serv,Cont);
 	{disconnected,Serv} when Cont==none -> accueil(Serv,Cont);
 	{disconnected,Serv} ->
 	    Cont ! {notif_deconnexion,node()},
