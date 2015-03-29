@@ -5,7 +5,7 @@ La documentation **technique** a migré vers le **[wiki](https://github.com/blga
 
 # Réseau
 
-Un routeur wifi est configuré pour gérer un réseau local de SSID `robot` et d'adresse `192.168.42.0/24` avec DHCP. Les robots sont identifiés par adresse MAC et récupèrent des IP fixes `192.168.42.10x` (`x` entre 0 et 9). Leurs hostnames sont `robotX` (`X` entre 0 et 9).
+Un routeur wifi est configuré pour gérer un réseau local de SSID `robot` et d'adresse `192.168.42.0/24` avec DHCP. Les robots sont identifiés par adresse MAC et récupèrent des IP fixes `192.168.42.10x` (`x` entre 0 et 9). Leurs nom d'hôtes sont `robotX` (`X` entre 0 et 9).
 
 Pour le bon fonctionnement avec Erlang, il est indispensable d'ajouter, avant toute chose, les hôtes suivants à `/etc/hosts` :
 ```
@@ -27,7 +27,7 @@ La librairie Erlang est dans le fichier `erlib/robocom.erl`. Les fonctions utile
 
 Il y a plusieurs façons d'utiliser la librairie, la manière la plus simple est illustrée en premier.
 
-## Contrôle distant du robot
+## 1. Contrôle distant du robot
 
 Allumer le robot (ici on prendra `robot0` comme exemple) et s'y connecter via `ssh` :
 ```
@@ -50,7 +50,7 @@ pong
 ```
 Si la réponse est `pang`, il y a un problème (vérifier le cookie).
 
-Récupérer le PID du serveur du robot :
+Récupérer le PID du serveur de contrôle du robot :
 ```
 > R = robocom:get_robot(0).
 ```
@@ -62,7 +62,7 @@ Contrôler le robot (cf fonctions de contrôle de la lib) :
 ...
 ```
 
-On terminera tout programme de contrôle d'un robot par un appel à `reset_robot` :
+On terminera tout programme de contrôle d'un robot par un appel à `reset_robot/1` :
 ```
 > robocom:reset_robot(0).
 ```
@@ -85,3 +85,47 @@ Pour obtenir le PID du contrôleur (distant, supposé enregistré auprès de son
 ```
 
 Vous pouvez maintenant écrire à `Control1` sans difficulté (`Control1 ! coucou`).
+
+## 2. Contrôle local du robot (robot autonome)
+
+Il n'est **pas recommandé** de suivre le contenu de cette section, sauf problème avec votre machine servant de contrôleur distant.
+
+La librairie est conçue pour que le code écrit pour le contrôle distant soit compatible avec tous les modes de contrôle : il fonctionnera aussi bien lorsque plusieurs controleurs sont répartis sur plusieurs machines distantes, ou lorsqu'ils sont tous hébergés sur la même machine distance, ou lorsqu'ils tournent tous directement localement sur le robot.
+
+Cependant ces mecanismes non sont pas tous utiles pour un contrôle local. Dans ce cas les choses sont plus simples.
+
+Tout ce passe dans cette section directement sur le robot (typiquement via `ssh`).
+
+Pour un contrôle purement local, plus besoin de lancer le script `robocom/start_robot`, on peut lancer directement le serveur de contrôle du robot localement :
+```
+R = robocom:spawn_robot().
+```
+
+Et on contrôle le robot avec les fonctions de contrôle en utilisant le PID `R`. Les fonctions de dialogue avec l'accueil du robot (cf. lib) ne sont pas disponible dans ce cas (le serveur d'accueil n'est pas lancé).
+
+On termine enfin tout programme par un appel à `reset/1` :
+```
+robocom:reset(R).
+```
+
+### Upload du code sur le robot (pour contrôle local)
+
+Pour un contrôle local, il devient utile de pouvoir uploader son code sur le robot.
+
+Pour ne pas polluer le robot, il est **déconseillé** d'uploader son code via `scp`.
+
+En lieu et place on **recommande** de créer un noeud Erlang (en `ssh`) sur le robot avec :
+```
+ubuntu@robot0$ erl -sname robonode -setcookie ROBOT
+```
+
+Puis d'utiliser le code Erlang suivant (qui peut bien sûr être empaqueté dans une fonction Erlang) sur une machine distante pour envoyer le code à exécuter sur le robot :
+```
+$ erl -sname program -setcookie ROBOT
+> c(mon_module).
+> {Mod, Bin, _} = code:get_object_code(mon_module).
+> rpc:call(robocom:robot_node(0), erlang, load_module, [Mod, Bin]).
+> spawn(robocom:robot_node(0), mon_module, ma_fonction, [arg1,arg2,...]).
+```
+
+Un processus exécutant `mon_module:ma_fonction(arg1,arg2,...)` sera alors créé sur le noeud Erlang du robot.

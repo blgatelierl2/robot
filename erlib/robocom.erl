@@ -1,5 +1,5 @@
 -module(robocom).
--export([start/0,spawn_serveur/0,start_serveur/0,robot_node/1,ping_robot/1,get_robot/1,reset_robot/1,enregistrement/1,get_controleur/1,moteurs/3,led/2,servo/2,ultrason/1,odometres/1,infrarouge/1]).
+-export([start/0,spawn_serveur/0,start_serveur/0,robot_node/1,ping_robot/1,get_robot/1,reset_robot/1,enregistrement/1,get_controleur/1,moteurs/3,led/2,servo/2,ultrason/1,odometres/1,infrarouge/1,reset/1]).
 
 -define(DEVICE,"/dev/ttyACM0").
 -define(SERIALSPEED,9600).
