@@ -70,7 +70,7 @@ On terminera tout programme de contrôle d'un robot par un appel à `reset_robot
 
 ### Communication
 
-Si plusieurs robots sont contrôlés par une même machine (au sein d'un même noeud Erlang), la communication entre robots peut être simulée par la communication locale entre leurs contrôleurs.
+Si plusieurs robots sont contrôlés par une même machine (au sein d'un même nœud Erlang), la communication entre robots peut être simulée par la communication locale entre leurs contrôleurs.
 
 Si en revanche, chaque robot est contrôlé par des machines distinctes, des mécanismes de la lib permettent de les identifier simplement afin de communiquer.
 
@@ -90,18 +90,16 @@ Vous pouvez maintenant écrire à `Control1` sans difficulté (`Control1 ! couco
 
 Il n'est **pas recommandé** de suivre le contenu de cette section, sauf problème avec votre machine servant de contrôleur distant.
 
-La librairie est conçue pour que le code écrit pour le contrôle distant soit compatible avec tous les modes de contrôle : il fonctionnera aussi bien lorsque plusieurs controleurs sont répartis sur plusieurs machines distantes, ou lorsqu'ils sont tous hébergés sur la même machine distance, ou lorsqu'ils tournent tous directement localement sur le robot.
+La librairie est conçue pour que le code écrit pour le contrôle distant (cf. section précédente) soit compatible avec tous les modes de contrôle : il fonctionnera aussi bien lorsque plusieurs controleurs sont répartis sur plusieurs machines distantes que lorsqu'ils sont tous hébergés sur la même machine distance ou qu'ils tournent tous directement localement sur le robot.
 
-Cependant ces mecanismes non sont pas tous utiles pour un contrôle local. Dans ce cas les choses sont plus simples.
-
-Tout ce passe dans cette section directement sur le robot (typiquement via `ssh`).
+Cependant ces mécanismes ne sont pas tous utiles pour un contrôle local. Dans ce cas les choses peuvent être simplifiées. Tout ce passe ici directement sur le robot (typiquement via `ssh`).
 
 Pour un contrôle purement local, plus besoin de lancer le script `robocom/start_robot`, on peut lancer directement le serveur de contrôle du robot localement :
 ```
 R = robocom:spawn_robot().
 ```
 
-Et on contrôle le robot avec les fonctions de contrôle en utilisant le PID `R`. Les fonctions de dialogue avec l'accueil du robot (cf. lib) ne sont pas disponible dans ce cas (le serveur d'accueil n'est pas lancé).
+On contrôle alors le robot avec les fonctions de contrôle en utilisant le PID `R`. Les fonctions de dialogue avec l'accueil du robot (cf. lib) ne sont pas disponible dans ce cas (le serveur d'accueil, inutile en local, n'est pas lancé).
 
 On termine enfin tout programme par un appel à `reset/1` :
 ```
@@ -114,12 +112,12 @@ Pour un contrôle local, il devient utile de pouvoir uploader son code sur le ro
 
 Pour ne pas polluer le robot, il est **déconseillé** d'uploader son code via `scp`.
 
-En lieu et place on **recommande** de créer un noeud Erlang (en `ssh`) sur le robot avec :
+En lieu et place on **recommande** de créer un nœud Erlang (en `ssh`) sur le robot :
 ```
 ubuntu@robot0$ erl -sname robonode -setcookie ROBOT
 ```
 
-Puis d'utiliser le code Erlang suivant (qui peut bien sûr être empaqueté dans une fonction Erlang) sur une machine distante pour envoyer le code à exécuter sur le robot :
+Puis d'utiliser le code Erlang suivant (qui peut bien sûr être empaqueté dans une fonction Erlang) sur une machine distante pour envoyer le code à exécuter sur le robot (ici `robot0`) :
 ```
 $ erl -sname program -setcookie ROBOT
 > c(mon_module).
@@ -128,4 +126,6 @@ $ erl -sname program -setcookie ROBOT
 > spawn(robocom:robot_node(0), mon_module, ma_fonction, [arg1,arg2,...]).
 ```
 
-Un processus exécutant `mon_module:ma_fonction(arg1,arg2,...)` sera alors créé sur le noeud Erlang du robot.
+Un processus exécutant `mon_module:ma_fonction(arg1,arg2,...)` sera alors créé sur le nœud Erlang du robot.
+
+**NB.** L'appel à `robot_node(X)' fabrique simplement un atome `robonode@robotX`.
