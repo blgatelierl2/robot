@@ -128,4 +128,4 @@ $ erl -sname program -setcookie ROBOT
 
 Un processus exécutant `mon_module:ma_fonction(arg1,arg2,...)` sera alors créé sur le nœud Erlang du robot.
 
-**NB.** L'appel à `robot_node(X)' fabrique simplement un atome `robonode@robotX`.
+**NB.** L'appel à `robot_node(X)` fabrique simplement un atome `robonode@robotX`.
