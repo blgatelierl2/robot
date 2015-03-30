@@ -1,6 +1,12 @@
 
 #include <Arduino.h>
 
+/*
+  ATTENTION !  Le fil jaune du capteur (sortie) doit être branché sur 
+  le port vert (pin) de la carte Romeo tandis que le fil vert du capteur (masse)
+  doit être branché sur le port noir (masse) de la carte Romeo.
+*/
+
 #define IRD_PINL 10
 #define IRD_PINC 11
 #define IRD_PINR 12
