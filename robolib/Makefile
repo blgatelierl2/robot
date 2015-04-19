@@ -6,4 +6,4 @@ all:
 #	ino serial
 
 clean:
-	ino build
+	ino clean

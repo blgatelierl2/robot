@@ -19,10 +19,10 @@ void ULT_init(){
   Serial1.begin(9600);
 }
 
-int ULT_getDistance(){
-  char c[4];
+unsigned int ULT_getDistance(){
+  byte c[4];
   Serial1.write(ULT_DistReadCmd,4);
   while (Serial1.available()<4) delay(10);
-  Serial1.readBytes(c,4);
-  return (int(c[1])<<8)|int(c[2]);
+  Serial1.readBytes((char*)c,4);
+  return (c[1]<<8)|c[2];
 }
