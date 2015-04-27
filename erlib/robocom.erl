@@ -184,7 +184,7 @@ infrarouge(Serv) ->
     end.
 
 reset(Serv) ->
-    moteurs(Serv,0,0),
+    vitesse(Serv,0,0),
     servo(Serv,90),
     led(Serv,0),
     ok.
