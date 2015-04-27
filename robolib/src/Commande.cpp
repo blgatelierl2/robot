@@ -6,6 +6,7 @@
 #include "Servomoteur.h"
 #include "Ultrason.h"
 #include "Infrarouge.h"
+#include "RaPid.h"
 
 int CMD_fabInt(byte b0, byte b1) {
   return int(b0)|(int(b1)<<8);
@@ -42,6 +43,12 @@ void CMD_recvOrdre() {
       Serial.write(l|(c<<1)|(r<<2));
     }
     else if (c[0]=='r') ODO_reset();
+    else if (c[0]=='v') {
+      int vL = CMD_fabInt(c[1],c[2]);
+      int vR = CMD_fabInt(c[3],c[4]);
+      if (vL==0 && vR==0) VPID_stop();
+      else VPID_start(vL,vR);
+    }
     else if (c[0]=='D') {
       p = 2*(c[1]-127);
       if (abs(p)<30) p = 0;
@@ -72,4 +79,5 @@ void CMD_recvOrdre() {
       }
     }
   }
+  VPID_boucle();
 }

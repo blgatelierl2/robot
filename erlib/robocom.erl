@@ -48,6 +48,9 @@ serveur(SerialPort) ->
 	{mot,PL,PR} ->
 	    SerialPort ! {send, <<"m",PL:16/integer-signed-little,PR:16/integer-signed-little>>},
 	    serveur(SerialPort);
+	{vit,VL,VR} ->
+	    SerialPort ! {send, <<"v",VL:16/integer-signed-little,VR:16/integer-signed-little>>},
+	    serveur(SerialPort);
 	{led,B} ->
 	    SerialPort ! {send, <<"l",B:8,0:24>>},
 	    serveur(SerialPort);
@@ -140,6 +143,10 @@ reset_robot(N) ->
 % Controler les moteurs (Pl/Pr entre -255 et 255)
 moteurs(Serv,Pl,Pr) ->
     Serv ! {mot,Pl,Pr},
+    ok.
+
+vitesse(Serv,Vl,Vr) ->
+    Serv ! {vit,Vl,Vr},
     ok.
 
 % Allumer/eteindre la LED du robot (B = 0 ou 1)
