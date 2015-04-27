@@ -41,6 +41,7 @@ void CMD_recvOrdre() {
       byte r = IRD_detectR()?1:0;
       Serial.write(l|(c<<1)|(r<<2));
     }
+    else if (c[0]=='r') ODO_reset();
     else if (c[0]=='D') {
       p = 2*(c[1]-127);
       if (abs(p)<30) p = 0;
