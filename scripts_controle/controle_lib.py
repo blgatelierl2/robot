@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+# Controle par manette xbox avec positionnement
+# pour robotest.ino dans lequel Position.cpp est utilise
+
 # Robot address
 robot_mac = '20:14:05:16:21:02'
 #robot_mac = '20:14:05:16:21:45'

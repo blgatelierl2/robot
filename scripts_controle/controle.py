@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# Controle simple par manette xbox
+
 # Robot address
 robot_mac = '20:14:05:16:21:02'
 #robot_mac = '20:14:05:16:21:45'
@@ -96,7 +98,7 @@ def main():
                 else:
                     x,y = ax1[0],-ax1[1]
                     bt.send('S'+chr(min(int(math.sqrt(x*x+y*y)*255),255))+chr(int((math.atan2(y,x)/math.pi+1)*127)))
-        clk.tick(20)
+        clk.tick(50)
     bt.close()
 
 main()

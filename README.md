@@ -3,6 +3,8 @@ Documentation utilisateur du robot
 
 La documentation **technique** a migré vers le **[wiki](https://github.com/blgatelierl2/robot/wiki)**.
 
+![Photo du robot](robot.jpg)
+
 # Réseau
 
 Un routeur wifi est configuré pour gérer un réseau local de SSID `robot` et d'adresse `192.168.42.0/24` avec DHCP. Les robots sont identifiés par adresse MAC et récupèrent des IP fixes `192.168.42.10x` (`x` entre 0 et 9). Leurs noms d'hôtes sont `robotX` (`X` entre 0 et 9).

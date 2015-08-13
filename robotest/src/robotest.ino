@@ -1,27 +1,28 @@
 
 /* 
   Du code pour piloter le robot par Bluetooth.
-  Attention ! Contrairement a un Arduino, la carte Romeo V2
+  Contrairement a un Arduino Uno, la carte Romeo V2
   a 2 interfaces materielles pour la communication serie :
-  l'interface Serial (standard, qui est en particulier utilisee
-  pour le transfert du programme) et l'interface Serial1
-  a laquelle est connectee la socket Bluetooth de la carte.
+  l'interface Serial (utilisee pour le transfert du programme)
+  et l'interface Serial1 a laquelle est connectee la socket
+  Bluetooth de la carte.
   Le programme suivant utilise donc Serial1.
-
-  A = M2 = Droite
-  B = M1 = Gauche
+  Attention a s'assurer que rien n'est connecte aux pins 0 et 1
+  de la Romeo (sur lesquels est egalement connectee Serial1) !
 
 */
 
 #include "Moteurs.h"
-#include "Odometres.h"
+//#include "Odometres.h"
 //#include "Position.h"
 
 void setup() {
   Serial1.begin(9600);
   MOT_init();
-  ODO_init();
+  //ODO_init();
 }
+
+//int maj_count = 0;
 
 void loop() {
   byte c[3];
@@ -68,7 +69,11 @@ void loop() {
       }*/
   }
 
-  //POS_maj();
+  /*++maj_count;
+  if (maj_count==25) {
+    POS_maj();
+    maj_count = 0;
+  }*/
   
   delay(10);
 }
